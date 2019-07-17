@@ -9,8 +9,8 @@ RUN sh -c "echo 'deb http://download.mono-project.com/repo/debian wheezy main' |
 #RUN  sudo apt-get update 
 
 #Install mono and oracle-xe
+RUN apt-get install apt-transport-https
 RUN apt-get update && \
-        apt-get install apt-transport-https && \
         apt-get install -y --force-yes mono-devel mono-complete referenceassemblies-pcl openssh-server curl && \
         apt-get install oracle-xe-universal && \
         /etc/init.d/oracle-xe configure
