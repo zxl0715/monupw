@@ -9,7 +9,7 @@ RUN sh -c "echo 'deb http://download.mono-project.com/repo/debian wheezy main' |
 #RUN  sudo apt-get update 
 
 #Install mono and oracle-xe
-RUN apt-get install apt-transport-https -y  &&\ 
+RUN apt-get install apt-transport-https -y  && \ 
         apt-get install wget -y
 RUN sudo wget http://oss.oracle.com/el4/RPM-GPG-KEY-oracle && \
         apt-key add RPM-GPG-KEY-oracle
