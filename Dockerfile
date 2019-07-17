@@ -3,14 +3,16 @@ FROM ubuntu:14.04.2
 
 MAINTAINER azraelrabbit <azraelrabbit@gmail.com>
 
-#add mono  official source
+#add mono  official source and oracle-xe source
 RUN  sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-RUN sh -c "echo 'deb http://download.mono-project.com/repo/debian wheezy main' | sudo tee /etc/apt/sources.list.d/mono-xamarin.list"
+RUN sh -c "echo 'deb http://download.mono-project.com/repo/debian wheezy main' | echo 'deb http://oss.oracle.com/debian unstable main non-free' | sudo tee /etc/apt/sources.list.d/mono-xamarin.list"
 #RUN  sudo apt-get update 
 
-#Install mono
+#Install mono and oracle-xe
 RUN apt-get update && \
-        apt-get install -y --force-yes mono-devel mono-complete referenceassemblies-pcl openssh-server curl
+        apt-get install -y --force-yes mono-devel mono-complete referenceassemblies-pcl openssh-server curl && \
+        apt-get install oracle-xe-universal && \
+        /etc/init.d/oracle-xe configure
 
 
 RUN sudo sed -i 's/UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config
