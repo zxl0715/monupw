@@ -3,23 +3,17 @@ FROM ubuntu:14.04.2
 
 MAINTAINER azraelrabbit <azraelrabbit@gmail.com>
 
-#add mono  official source and oracle-xe source
+#add mono  official source
 RUN  sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-RUN sh -c "echo 'deb http://download.mono-project.com/repo/debian wheezy main' | echo 'deb http://oss.oracle.com/debian unstable main non-free' | sudo tee /etc/apt/sources.list.d/mono-xamarin.list"
+RUN sh -c "echo 'deb http://download.mono-project.com/repo/debian wheezy main' | sudo tee /etc/apt/sources.list.d/mono-xamarin.list"
 #RUN  sudo apt-get update 
 
-#Install mono and oracle-xe
-RUN apt-get install apt-transport-https -y  && \ 
-        apt-get install wget -y
-RUN sudo wget http://oss.oracle.com/el4/RPM-GPG-KEY-oracle && \
-        apt-key add RPM-GPG-KEY-oracle
+#Install mono
 RUN apt-get update && \
-        apt-get install -y --force-yes mono-devel mono-complete referenceassemblies-pcl openssh-server curl && \
-        apt-get install oracle-xe-universal && \
-        /etc/init.d/oracle-xe configure
+        apt-get install -y --force-yes mono-devel mono-complete referenceassemblies-pcl openssh-server curl
 
 
-RUN sudo sed -i 's/UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config && 
+RUN sudo sed -i 's/UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config
 RUN mkdir -p /var/run/sshd && \
       echo "root:monups" |chpasswd  && \
       useradd admin  &&  echo "admin:monupw" | chpasswd  &&  echo "admin   ALL=(ALL)       ALL" >> /etc/sudoers 
@@ -33,8 +27,9 @@ ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/opt/mono/lib
 ENV PKG_CONFIG_PATH $PKG_CONFIG_PATH:/opt/mono/lib/pkgconfig
 
 # install mono web server Jexus
-RUN cd /tmp && curl http://www.daqiao.io/5.6.4/install | sh
-
+#RUN cd /tmp && curl http://www.daqiao.io/5.6.4/install | sh
+#安装替换成如下命令
+RUN curl https://jexus.org/release/install|sudo sh
 RUN mkdir /data 
 #&& touch /data/x && mkdir /data/jwslog && mkdir /data/siteconf && mkdir /data/wwwroot
 #RUN cp /usr/jexus/siteconf/default /data/siteconf/
@@ -58,5 +53,3 @@ EXPOSE 22  8081  80
 #ENTRYPOINT /usr/sbin/sshd -D 
 #CMD    ["/usr/sbin/sshd", "-D"]
 CMD  /usr/jexus/jws start && /usr/sbin/sshd -D
-
-
